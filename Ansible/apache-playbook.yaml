@@ -1,56 +1,48 @@
 ---
-- name: PLAY 1 - Deploy Apache with a message on Ubuntu clients
+- name: Install Apache webserver on Ubuntu clients
   hosts: ubuntu-clients
   become: yes
   vars_files:
-    - variables.yml
+    - variables.yaml
 
   tasks:
     - name: Update all packages
-      ansible.builtin.apt:
-        upgrade: dist
+      apt:
         update_cache: yes
 
     - name: Install Apache
-      ansible.builtin.apt:
-        name: "{{ apache_package }}"
+      apt:
+        name: apache2
         state: present
 
     - name: Ensure Apache is running
-      ansible.builtin.service:
-        name: "{{ apache_package }}"
+      service:
+        name: apache2
         state: started
-        enabled: true
+        enabled: yes
 
-    - name: Copy index.html to Ubuntu clients
-      ansible.builtin.copy:
-        src: ./index.html
+    - name: Copy custom index.html
+      copy:
+        src: index.html
         dest: /var/www/html/index.html
-      notify: restart apache
+        mode: '0644'
 
-  handlers:
-    - name: restart apache
-      ansible.builtin.service:
-        name: "{{ apache_package }}"
-        state: restarted
-
-- name: PLAY 2 - Install git on all Ubuntu clients
+- name: Install Git on Ubuntu clients
   hosts: ubuntu-clients
   become: yes
 
   tasks:
-    - name: Install git
-      ansible.builtin.apt:
+    - name: Install Git
+      apt:
         name: git
         state: present
 
-- name: PLAY 3 - Debug your name on all hosts
+- name: Debug my name on all hosts
   hosts: all
-  become: yes
   vars_files:
-    - variables.yml
+    - variables.yaml
 
   tasks:
-    - name: Show your name using debug
-      ansible.builtin.debug:
-        msg: "Hello, my name is {{ student_name }}"
+    - name: Display name using debug
+      debug:
+        msg: "My name is {{ my_name }}"
