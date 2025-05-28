@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+  build:
+    commands:
+      - echo "Packaging CloudFormation Template"
+      - aws cloudformation package \
+          --template-file ec2-apache-static-site.yml \
+          --s3-bucket pipeline.anjellscloud.com \
+          --output-template-file packaged-template.yml
+artifacts:
+  files:
+    - packaged-template.yml
