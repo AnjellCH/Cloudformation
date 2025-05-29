@@ -1,0 +1,39 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9  # It will install Python 3.9 on the environment
+    commands:
+      - echo "==== INSTALLING CFN-LINT ===="
+      - pip install cfn-lint
+
+  pre_build:
+    commands:
+      - echo "==== CHECK IF PYTHON AND AWSCLI WAS INSTALLED SUCCESSFULLY ===="
+      - python3 --version
+      - aws --version
+      - echo "==== CHECK CFN-LINT ===="
+      - cfn-lint --version
+
+  build:
+    commands:
+      - echo "==== CHECK FOR SYNTAX ON OUR TEMPLATE ===="
+      - cfn-lint ec2-user-data.yaml
+      - echo "==== BUILD OUR CFN TEMPLATE ===="
+      - aws cloudformation package \
+          --template-file ec2-user-data.yaml \
+          --s3-bucket anjellscloud-pipeline-artifacts \
+          --output-template-file build-artifact-template.yaml
+
+  post_build:
+    commands:
+      - echo "==== THIS IS MY POSTBUILD SECTION ===="
+      - echo "Build is completed at `date`..."
+
+artifacts:
+  files:
+    - build-artifact-template.yaml  # The only artifact we will use for the next stage
+
+
+
