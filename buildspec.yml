@@ -21,10 +21,7 @@ phases:
       - echo "==== CHECK FOR SYNTAX ON OUR TEMPLATE ===="
       - cfn-lint ec2-user-data.yaml
       - echo "==== BUILD OUR CFN TEMPLATE ===="
-      - aws cloudformation package \
-          --template-file ec2-user-data.yaml \
-          --s3-bucket anjellscloud-pipeline-artifacts \
-          --output-template-file build-artifact-template.yaml
+      - aws cloudformation package --template-file ec2-user-data.yaml --s3-bucket anjellscloud-pipeline-artifacts --output-template-file build-artifact-template.yaml
 
   post_build:
     commands:
