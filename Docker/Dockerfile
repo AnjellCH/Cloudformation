@@ -1,16 +1,19 @@
-#SPECIFY A BASE IMAGE
+# Specify a base image
 FROM amazonlinux:2
 
-RUN yum update -y 
+# Update all packages
+RUN yum -y update
 
+# Install apache inside the container
 RUN yum install -y httpd
 
-COPY index.html /var/www/html
+# Copy the app inside the container -> /var/www/html
+COPY index.html /var/www/html/
 
 EXPOSE 80
 
-ENTRYPOINT [ "usr/sbin/httpd" ]
+# systemctl start httpd (service) run apache
+ENTRYPOINT ["/usr/sbin/httpd"]
 
-CMD [ "-D," "FOREGROUND" ]
-
-
+# run in the background
+CMD ["-D", "FOREGROUND"]
